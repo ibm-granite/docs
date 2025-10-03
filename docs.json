@@ -71,6 +71,7 @@
             "group": "Granite Language Cookbook",
             "pages": [
               "granite/docs/use-cases/prompt-engineering",
+              "granite/docs/fine-tune/unsloth",
               "granite/docs/fine-tune/granite",
               "granite/docs/use-cases/summarize",
               "granite/docs/use-cases/langchain-rag",
