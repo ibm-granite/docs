@@ -32,11 +32,12 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  # /granite/docs/ for the canonical upstream and any designated staging fork — matches the
-  # public path exactly so a single path-preserving proxy rule covers pages and all assets.
-  # All other forks get /{repo-name}/granite/docs/ which matches their GitHub Pages path for
-  # direct preview without a proxy.
-  DOCS_BASE_URL: ${{ (github.repository == 'ibm-granite/docs' || github.repository == 'planetf1/granite-docs') && '/granite/docs/' || format('/{0}/granite/docs/', github.event.repository.name) }}
+  # Upstream (ibm-granite/docs): /granite/docs/ — matches the IBM.com public path so the
+  # single Akamai proxy rule covers pages and all assets. Direct GitHub Pages URL is
+  # intentionally broken; access via www.ibm.com/granite/docs/ only.
+  # Forks: /{repo-name}/granite/docs/ — matches their GitHub Pages serving path so
+  # direct preview at username.github.io/{repo-name}/granite/docs/ works.
+  DOCS_BASE_URL: ${{ github.repository == 'ibm-granite/docs' && '/granite/docs/' || format('/{0}/granite/docs/', github.event.repository.name) }}
   DOCS_SITE_URL: https://${{ github.repository_owner }}.github.io
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 

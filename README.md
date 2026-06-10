@@ -6,6 +6,27 @@ Every merge to `main` triggers CI, which builds and deploys the site automatical
 
 ---
 
+## Repository layout
+
+```
+granite/docs/          # MDX source for all pages
+  models/              # Model family pages (Granite 4, embedding, vision, etc.)
+  run/                 # Serving guides (Ollama, vLLM, LM Studio, partners)
+  use-cases/           # Cookbooks and recipes
+  fine-tune/           # Fine-tuning guides
+  model-standards/     # Naming guidance, signature verification
+  responsible-ai/      # Responsible AI page
+src/
+  components/          # Reusable MDX components (Card, Accordion, etc.)
+  theme/               # Swizzled Docusaurus theme components
+  css/custom.css       # Global style overrides
+static/                # Fonts, images, analytics script
+sidebars.ts            # Sidebar structure for Docs and Cookbooks tabs
+docusaurus.config.ts   # Site configuration
+```
+
+---
+
 ## Local development
 
 ### Prerequisites
@@ -40,31 +61,39 @@ A production build is written to `build/`.
 
 ### Add or update a page
 
-- Pages live under `granite/docs/` as `.mdx` files.
-- To add a page: create an `.mdx` file in the right directory, then add it to `sidebars.ts`.
-- To update a page: edit the existing `.mdx` file directly.
+1. Create or edit an `.mdx` file under `granite/docs/`.
+2. To add a new page, also add its path to `sidebars.ts` in the appropriate section.
+3. Test locally with `npm start` before opening a PR.
 
 ### Frontmatter
 
-Each page should have a `title` and `description` in its frontmatter:
+Every page should have at minimum:
 
 ```mdx
 ---
 title: "My Page"
-description: "What this page covers."
+description: "One sentence describing what this page covers."
 ---
 ```
 
+Optional fields:
+
+| Field | Purpose |
+|---|---|
+| `sidebar_label` | Override the sidebar display name (defaults to `title`) |
+| `displayed_sidebar: null` | Suppress the page from all sidebars (page still exists at its URL) |
+
 ### Components
 
-The following components are available in MDX files:
+The following components are available in MDX files without any import:
 
 | Component | Purpose |
 |---|---|
-| `<Card title="..." href="..." icon="...">` | Linked card |
-| `<CardGroup cols={2}>` | Grid container for cards |
+| `<Card title="..." href="..." icon="...">` | Linked card with optional icon |
+| `<CardGroup cols={2}>` | Grid container for `<Card>` elements |
 | `<Accordion title="...">` | Collapsible section |
-| `<AccordionGroup>` | Container for accordions |
+| `<AccordionGroup>` | Container for multiple `<Accordion>` elements |
+| `<CodeGroup>` | Tabbed code block group |
 
 For simple callouts, prefer native Docusaurus admonitions:
 
