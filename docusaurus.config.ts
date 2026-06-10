@@ -66,7 +66,7 @@ const config: Config = {
         theme: {
           customCss: './src/css/custom.css',
         },
-        sitemap: {changefreq: 'weekly', priority: 0.5},
+        sitemap: {changefreq: 'weekly', priority: 0.5, ignorePatterns: ['/search']},
       } satisfies Preset.Options,
     ],
   ],
