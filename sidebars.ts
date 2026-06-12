@@ -7,7 +7,7 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Models',
       items: [
-        'models/granite4-1',
+        'models/granite',
         'models/granite4-0',
         'models/docling',
         'models/vision',
