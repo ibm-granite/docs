@@ -105,14 +105,6 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
-      label: 'Granite Code Cookbook',
-      items: [
-        'use-cases/text-to-python',
-        'use-cases/text-to-shell',
-      ],
-    },
-    {
-      type: 'category',
       label: 'Agentic AI Cookbook',
       items: [
         'use-cases/granite-bee',
