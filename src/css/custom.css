@@ -119,3 +119,14 @@
   padding-left: 0.5rem;
   margin-left: -0.5rem;
 }
+
+/* Sunset announcement bar — ensure links stay readable on the amber background */
+div[class^='announcementBar_'] {
+  font-weight: 500;
+  border-bottom: 1px solid #e0c200;
+}
+div[class^='announcementBar_'] a {
+  color: inherit;
+  text-decoration: underline;
+  font-weight: 700;
+}
