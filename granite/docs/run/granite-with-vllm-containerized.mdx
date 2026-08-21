@@ -69,6 +69,6 @@ Now run the container with the added parameters:
 docker run --runtime nvidia --gpus all     -v ~/.cache/huggingface:/root/.cache/huggingface     -p 8000:8000     vllm/vllm-openai:latest     --model ibm-granite/granite-4.0-h-small --tool-call-parser granite4 --enable-auto-tool-choice
 ```
 
-Once the container is up, you can start running requests using the OpenAI API. Refer to the documentation on OpenAI API [tool calling](/models/granite#tool-calling) for examples.
+Once the container is up, you can start running requests using the OpenAI API. Refer to the documentation on OpenAI API [tool calling](/models/granite4-0#tool-calling) for examples.
 
 To run vLLM with the Granite 3 models and tool calling, use the additional parameters specified in the vLLM documentation [here](https://docs.vllm.ai/en/stable/features/tool_calling/#ibm-granite) as part of the `docker run` command share in Section 2.

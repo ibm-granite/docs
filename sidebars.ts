@@ -9,7 +9,7 @@ const sidebars: SidebarsConfig = {
       items: [
         'models/granite4-2',
         'models/granite4-1',
-        'models/granite',
+        'models/granite4-0',
         'models/docling',
         'models/vision',
         'models/speech',

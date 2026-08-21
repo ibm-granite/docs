@@ -76,7 +76,10 @@ const config: Config = {
       '@docusaurus/plugin-client-redirects',
       {
         // Pre-wired empty: add entries here if any URLs change after the IBM.com cutover.
-        redirects: [],
+        redirects: [
+          // The legacy /models/granite URL always lands on the latest generation.
+          {from: '/models/granite', to: '/models/granite4-2'},
+        ],
       } satisfies RedirectOptions,
     ],
     [
