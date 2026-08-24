@@ -121,11 +121,11 @@
 }
 
 /* Sunset announcement bar — ensure links stay readable on the amber background */
-div[class^='announcementBar_'] {
+.theme-announcement-bar {
   font-weight: 500;
   border-bottom: 1px solid #e0c200;
 }
-div[class^='announcementBar_'] a {
+.theme-announcement-bar a {
   color: inherit;
   text-decoration: underline;
   font-weight: 700;
