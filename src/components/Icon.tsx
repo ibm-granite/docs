@@ -4,7 +4,7 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import type {IconDefinition, SizeProp} from '@fortawesome/fontawesome-svg-core';
 import {
-  faArrowRight, faBicycle, faBolt, faBook, faBox, faBriefcase, faBug,
+  faArrowRight, faBicycle, faBolt, faBook, faBox, faBrain, faBriefcase, faBug,
   faChartLine, faChurch, faCircleExclamation, faCircleQuestion, faCloud,
   faCode, faCookieBite, faCopy, faCube, faDesktop, faDownload, faEye, faFileCode,
   faImages, faLaptop, faMagnifyingGlass, faMicrophone, faNewspaper,
@@ -26,6 +26,7 @@ const FA_MAP: Record<string, IconDefinition> = {
   'bolt':               faBolt,
   'book':               faBook,
   'box':                faBox,
+  'brain':              faBrain,
   'briefcase':          faBriefcase,
   'chart-line':         faChartLine,
   'church':             faChurch,
