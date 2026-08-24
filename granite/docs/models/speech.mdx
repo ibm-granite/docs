@@ -1,6 +1,6 @@
 ---
 title: "Granite Speech"
-description: "Compact multilingual models for automatic speech recognition (ASR) and translation (AST) across English, French, German, Spanish, Portuguese, and Japanese."
+description: "Compact speech models for automatic speech recognition (ASR)."
 sidebar_custom_props:
   icon: "mic"
 ---
@@ -14,9 +14,9 @@ sidebar_custom_props:
     View the full Granite Speech collection on Hugging Face
   </Card>
   <Card
-    title="Speech Demo"
+    title="Streaming Audio Demo"
     icon="rocket"
-    href="https://huggingface.co/spaces/ibm-granite/granite-speech"
+    href="https://huggingface.co/spaces/ibm-granite/granite-speech-streaming-webgpu"
   >
     Try Granite Speech in action
   </Card>
@@ -38,21 +38,20 @@ sidebar_custom_props:
 
 ## Overview
 
-The **Granite Speech 4.1** model family provides compact and efficient speech-language models for multilingual automatic speech recognition (ASR) and automatic speech translation (AST), supporting English, French, German, Spanish, Portuguese, and Japanese. All models are trained on 174,000 hours of audio from public corpora and tailored synthetic datasets.
+The Granite Speech model family provides compact and efficient speech-language models for multilingual automatic speech recognition (ASR) and automatic speech translation (AST), supporting English, French, German, Spanish, Portuguese, and Japanese.
 
 ### Model Variants
 
-The Granite Speech 4.1 suite includes three specialized variants:
+The Granite Speech suite includes four specialized variants:
 
+- **[granite-speech-5.0-470m-turboctc](https://huggingface.co/ibm-granite/granite-speech-5.0-470m-turboctc)**: compact English ASR model with very high inference speed that is well suited for deployment on laptops, smartphones and other edge devices
 - **[granite-speech-4.1-2b](https://huggingface.co/ibm-granite/granite-speech-4.1-2b)**: Balanced ASR and AST capabilities with improved punctuation and capitalization across all supported languages
 - **[granite-speech-4.1-2b-plus](https://huggingface.co/ibm-granite/granite-speech-4.1-2b-plus)**: Speech-to-text model with speaker-attributed ASR, timestamps, and keyword-prompted ASR for enhanced recognition of names, acronyms, and technical jargon
 - **[granite-speech-4.1-2b-nar](https://huggingface.co/ibm-granite/granite-speech-4.1-2b-nar)**: Non-autoregressive variant ([NLE architecture](https://arxiv.org/abs/2603.08397)) optimized for fast and accurate ASR with significantly lower latency
 
 ### Performance
 
-Granite Speech 4.1 models deliver industry-leading performance on the [OpenASR Leaderboard](https://huggingface.co/spaces/hf-audio/open_asr_leaderboard): **granite-speech-4.1-2b ranks #1** for accuracy, while **granite-speech-4.1-2b-nar places #3** with exceptional speed through its non-autoregressive architecture.
-
-Granite Speech is released under the Apache 2.0 license, making it freely available for both research and commercial purposes, with full transparency into its training data.
+Granite Speech models deliver industry-leading performance on the [OpenASR Leaderboard](https://huggingface.co/spaces/hf-audio/open_asr_leaderboard) and the FFASR Leaderboard. Granite Speech is released under the Apache 2.0 license, making it freely available for both research and commercial purposes, with full transparency into its training data.
 
 [Granite Speech Paper](https://arxiv.org/abs/2505.08699)
 

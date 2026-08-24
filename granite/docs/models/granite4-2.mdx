@@ -16,15 +16,15 @@ sidebar_custom_props:
   <Card
     title="GitHub Organization"
     icon="github"
-    href="https://github.com/ibm-granite"
+    href="https://github.com/ibm-granite/granite-4.2-language-models"
   >
-    Code examples, tools and documentation
+    Granite models and documentation
   </Card>
 </CardGroup>
 
 ## Overview
 
-**Granite 4.2** is a family of dense reasoning language models available in three sizes: 3B, 8B, and 30B parameters. Post-trained from the Granite 4.1 base models, the Granite 4.2 generation introduces native reasoning (thinking) capabilities, allowing models to perform step-by-step chain-of-thought reasoning before producing final answers. This significantly improves performance on complex math, coding, multi-step logic, and agentic tool-calling tasks.
+**Granite 4.2** is a family of dense reasoning language models available in three sizes: 3B, 8B, and 30B parameters. Granite 4.2 introduces native reasoning (thinking) capabilities, allowing models to perform step-by-step chain-of-thought reasoning before producing final answers. This significantly improves performance on complex math, coding, multi-step logic, and agentic tool-calling tasks.
 
 ### Model Variants
 
@@ -32,7 +32,7 @@ sidebar_custom_props:
 - **granite-4.2-8b**: Balanced reasoning model for general-purpose enterprise applications
 - **granite-4.2-30b**: Flagship reasoning model for complex reasoning and specialized tasks
 
-All models natively support a 128K context window (with long-context extension to 512K) and are released under the Apache 2.0 license, enabling unrestricted commercial and academic use.
+All models natively support a 128K context window (with long-context extension to 512K on the 30B model) and are released under the Apache 2.0 license with cryptographic signatures, ISO certification, and full transparency disclosures, enabling unrestricted commercial and academic use.
 
 ### Key Capabilities
 
@@ -118,6 +118,35 @@ Granite 4.2 supports three thinking modes, selected via chat-template parameters
 | **Non-thinking** | `enable_thinking=False` | Direct answer with no reasoning overhead |
 | **Low-effort** | `enable_thinking=True, low_effort=True` | Brief reasoning for simpler queries |
 
+#### Non-Thinking Mode
+
+Disable reasoning for a direct answer with no chain-of-thought overhead:
+
+<CodeGroup>
+
+```python Python
+messages = [
+    {"role": "user", "content": "What is the capital of France?"},
+]
+text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True, enable_thinking=False)
+inputs = tokenizer(text, return_tensors="pt").to(model.device)
+
+output = model.generate(**inputs, max_new_tokens=2048, temperature=1.0, top_p=0.95, do_sample=True)
+print(tokenizer.decode(output[0][inputs.input_ids.shape[-1]:], skip_special_tokens=False))
+```
+
+</CodeGroup>
+
+Expected output:
+
+<CodeGroup>
+
+```text Output
+<think></think>The capital of France is Paris.<|im_end|>
+```
+
+</CodeGroup>
+
 ### Tool Calling
 
 Granite 4.2 supports tool calling with integrated reasoning — the model thinks about which tool to call and why before making the call. Define a list of tools using OpenAI's function definition schema:
@@ -195,7 +224,10 @@ Boston
 
 ### Serving with vLLM
 
-Granite 4.2 is optimized for deployment with [vLLM](https://github.com/vllm-project/vllm). Use the custom `granite_thinking_parser` reasoning parser (included in each model repository, requires vLLM v0.20+) and the `qwen3_coder` tool-calling parser:
+Granite 4.2 is optimized for deployment with [vLLM](https://github.com/vllm-project/vllm) (v0.20+).
+
+> **Reasoning parser:** Use the custom `granite_thinking_parser`, available in each model's Hugging Face repository. The models also work with the built-in `nemotron_v3` parser, but `granite_thinking_parser` provides better formatting of reasoning output.
+> **Tool calling parser:** Use `qwen3_coder`.
 
 <CodeGroup>
 
@@ -213,3 +245,23 @@ vllm serve ibm-granite/granite-4.2-30b \
 </CodeGroup>
 
 The model then exposes an OpenAI-compatible API on `http://localhost:8000/v1`, which integrates with popular agentic coding harnesses such as OpenCode, Pi, and OpenHands out of the box.
+
+<CodeGroup>
+
+```python Python
+from openai import OpenAI
+
+client = OpenAI(base_url="http://localhost:8000/v1", api_key="unused")
+
+response = client.chat.completions.create(
+    model="granite-4.2-30b",
+    messages=[{"role": "user", "content": "Explain the Riemann hypothesis in simple terms."}],
+    temperature=1.0,
+    top_p=0.95,
+    max_tokens=8192,
+)
+
+print(response.choices[0].message.content)
+```
+
+</CodeGroup>
