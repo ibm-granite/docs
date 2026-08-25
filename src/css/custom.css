@@ -119,3 +119,14 @@
   padding-left: 0.5rem;
   margin-left: -0.5rem;
 }
+
+/* Sunset announcement bar — ensure links stay readable on the amber background */
+.theme-announcement-bar {
+  font-weight: 500;
+  border-bottom: 1px solid #e0c200;
+}
+.theme-announcement-bar a {
+  color: inherit;
+  text-decoration: underline;
+  font-weight: 700;
+}

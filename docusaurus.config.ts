@@ -76,7 +76,10 @@ const config: Config = {
       '@docusaurus/plugin-client-redirects',
       {
         // Pre-wired empty: add entries here if any URLs change after the IBM.com cutover.
-        redirects: [],
+        redirects: [
+          // The legacy /models/granite URL always lands on the latest generation.
+          {from: '/models/granite', to: '/models/granite4-2'},
+        ],
       } satisfies RedirectOptions,
     ],
     [
@@ -99,6 +102,16 @@ const config: Config = {
       {name: 'keywords', content: 'IBM Granite, AI, foundation models, LLM'},
       {name: 'description', content: 'IBM Granite documentation — models, serving guides, cookbooks'},
     ],
+    announcementBar: {
+      // Bump this id if the message changes and you want dismissals reset
+      // (only relevant while isCloseable is true).
+      id: 'site-sunset-2026',
+      content:
+        '⚠️ This documentation site is no longer being updated. For the latest Granite documentation and models, see <a target="_blank" rel="noopener noreferrer" href="https://huggingface.co/ibm-granite">Hugging Face</a> and <a target="_blank" rel="noopener noreferrer" href="https://github.com/ibm-granite">GitHub</a>.',
+      backgroundColor: '#fcf4d6',
+      textColor: '#1c1200',
+      isCloseable: false,
+    },
     navbar: {
       title: '',
       logo: {

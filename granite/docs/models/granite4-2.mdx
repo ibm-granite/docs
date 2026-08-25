@@ -1,0 +1,267 @@
+---
+title: "Granite 4.2"
+description: "Dense reasoning language model family in 3B, 8B, and 30B sizes with built-in chain-of-thought thinking, flexible thinking modes, and reasoning-augmented tool calling."
+sidebar_custom_props:
+  icon: "brain"
+---
+
+<CardGroup cols={2}>
+  <Card
+    title="Model Collection"
+    icon="arrow-right"
+    href="https://huggingface.co/collections/ibm-granite/granite-42-language-models"
+  >
+    View the full Granite 4.2 collection on Hugging Face
+  </Card>
+  <Card
+    title="GitHub Organization"
+    icon="github"
+    href="https://github.com/ibm-granite/granite-4.2-language-models"
+  >
+    Granite models and documentation
+  </Card>
+</CardGroup>
+
+## Overview
+
+**Granite 4.2** is a family of dense reasoning language models available in three sizes: 3B, 8B, and 30B parameters. Granite 4.2 introduces native reasoning (thinking) capabilities, allowing models to perform step-by-step chain-of-thought reasoning before producing final answers. This significantly improves performance on complex math, coding, multi-step logic, and agentic tool-calling tasks.
+
+### Model Variants
+
+- **granite-4.2-3b**: Compact reasoning model optimized for edge deployment and resource-constrained environments
+- **granite-4.2-8b**: Balanced reasoning model for general-purpose enterprise applications
+- **granite-4.2-30b**: Flagship reasoning model for complex reasoning and specialized tasks
+
+All models natively support a 128K context window (with long-context extension to 512K on the 30B model) and are released under the Apache 2.0 license with cryptographic signatures, ISO certification, and full transparency disclosures, enabling unrestricted commercial and academic use.
+
+### Key Capabilities
+
+**Built-in Reasoning**: Granite 4.2 features native chain-of-thought reasoning inside `<think>...</think>` tags, significantly improving performance on math, coding, and complex multi-step problems.
+
+**Flexible Thinking Modes**: Seamlessly switch between full thinking (default), non-thinking, and low-effort modes within a single model, allowing users to balance depth vs. latency on a per-query basis.
+
+**Reasoning-Augmented Tool Calling**: The model reasons about which tools to invoke and why before making the call, producing more accurate function calls for agentic workflows.
+
+**Multilingual Dialog**: Granite 4.2 is tested across English, German, Spanish, French, Japanese, Portuguese, Arabic, Czech, Italian, Korean, Dutch, and Chinese.
+
+## Getting Started
+
+First, install the required libraries:
+
+<CodeGroup>
+
+```bash Install
+pip install torch torchvision torchaudio
+pip install accelerate
+pip install transformers
+```
+
+</CodeGroup>
+
+### Generation
+
+This is a simple example of how to use the Granite-4.2-30B model in thinking mode:
+
+<CodeGroup>
+
+```python Python
+import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+model_path = "ibm-granite/granite-4.2-30b"
+tokenizer = AutoTokenizer.from_pretrained(model_path)
+# drop device_map if running on CPU
+model = AutoModelForCausalLM.from_pretrained(model_path, device_map="cuda", torch_dtype=torch.bfloat16)
+model.eval()
+
+# change input text as desired
+messages = [
+    { "role": "user", "content": "How many r's are in the word 'strawberry'?" },
+]
+
+text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True, enable_thinking=True)
+inputs = tokenizer(text, return_tensors="pt").to(model.device)
+
+# generate output tokens
+output = model.generate(**inputs, max_new_tokens=8192, temperature=1.0, top_p=0.95, do_sample=True)
+
+# decode output tokens into text
+print(tokenizer.decode(output[0][inputs.input_ids.shape[-1]:], skip_special_tokens=False))
+```
+
+</CodeGroup>
+
+Expected output:
+
+<CodeGroup>
+
+```text Output
+<think>
+First, I need to write out the word: s t r a w b e r r y.
+Now, I count the number of 'r' letters: one at position 3, one at position 8, one at position 9.
+Total r's = 3.
+</think>
+There are **3** r's in the word "strawberry".<|im_end|>
+```
+
+</CodeGroup>
+
+> **Generation parameters:** Use `temperature=1.0` and `top_p=0.95` across **all tasks and serving backends**, including general chat, reasoning, and tool calling.
+
+### Thinking Modes
+
+Granite 4.2 supports three thinking modes, selected via chat-template parameters:
+
+| Mode | Template Parameters | Behavior |
+|:-----|:-------------------|:---------|
+| **Thinking** (default) | `enable_thinking=True` | Full chain-of-thought reasoning inside `<think>...</think>` |
+| **Non-thinking** | `enable_thinking=False` | Direct answer with no reasoning overhead |
+| **Low-effort** | `enable_thinking=True, low_effort=True` | Brief reasoning for simpler queries |
+
+#### Non-Thinking Mode
+
+Disable reasoning for a direct answer with no chain-of-thought overhead:
+
+<CodeGroup>
+
+```python Python
+messages = [
+    {"role": "user", "content": "What is the capital of France?"},
+]
+text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True, enable_thinking=False)
+inputs = tokenizer(text, return_tensors="pt").to(model.device)
+
+output = model.generate(**inputs, max_new_tokens=2048, temperature=1.0, top_p=0.95, do_sample=True)
+print(tokenizer.decode(output[0][inputs.input_ids.shape[-1]:], skip_special_tokens=False))
+```
+
+</CodeGroup>
+
+Expected output:
+
+<CodeGroup>
+
+```text Output
+<think></think>The capital of France is Paris.<|im_end|>
+```
+
+</CodeGroup>
+
+### Tool Calling
+
+Granite 4.2 supports tool calling with integrated reasoning — the model thinks about which tool to call and why before making the call. Define a list of tools using OpenAI's function definition schema:
+
+<CodeGroup>
+
+```python Python
+import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+model_path = "ibm-granite/granite-4.2-30b"
+tokenizer = AutoTokenizer.from_pretrained(model_path)
+# drop device_map if running on CPU
+model = AutoModelForCausalLM.from_pretrained(model_path, device_map="cuda", torch_dtype=torch.bfloat16)
+model.eval()
+
+tools = [
+    {
+        "type": "function",
+        "function": {
+            "name": "get_current_weather",
+            "description": "Get the current weather for a specified city.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "city": {
+                        "type": "string",
+                        "description": "Name of the city"
+                    }
+                },
+                "required": ["city"]
+            }
+        }
+    }
+]
+
+# change input text as desired
+messages = [
+    { "role": "user", "content": "What's the weather like in Boston right now?" },
+]
+
+text = tokenizer.apply_chat_template(messages, tokenize=False, tools=tools,
+                                     add_generation_prompt=True, enable_thinking=True)
+inputs = tokenizer(text, return_tensors="pt").to(model.device)
+
+# generate output tokens
+output = model.generate(**inputs, max_new_tokens=4096, temperature=1.0, top_p=0.95, do_sample=True)
+
+# decode output tokens into text
+print(tokenizer.decode(output[0][inputs.input_ids.shape[-1]:], skip_special_tokens=False))
+```
+
+</CodeGroup>
+
+Expected output:
+
+<CodeGroup>
+
+```text Output
+<think>
+The user is asking for the weather in Boston right now. There's a function called
+get_current_weather that takes a city parameter. I need to call that with the city set to Boston.
+</think>
+<tool_call>
+<function=get_current_weather>
+<parameter=city>
+Boston
+</parameter>
+</function>
+</tool_call>
+<|im_end|>
+```
+
+</CodeGroup>
+
+### Serving with vLLM
+
+Granite 4.2 is optimized for deployment with [vLLM](https://github.com/vllm-project/vllm) (v0.20+).
+
+> **Reasoning parser:** Use the custom `granite_thinking_parser`, available in each model's Hugging Face repository. The models also work with the built-in `nemotron_v3` parser, but `granite_thinking_parser` provides better formatting of reasoning output.
+> **Tool calling parser:** Use `qwen3_coder`.
+
+<CodeGroup>
+
+```bash Serve
+vllm serve ibm-granite/granite-4.2-30b \
+    --served-model-name granite-4.2-30b \
+    --dtype bfloat16 \
+    --max-model-len 131072 \
+    --reasoning-parser granite_thinking_parser \
+    --reasoning-parser-plugin ./granite_thinking_parser.py \
+    --tool-call-parser qwen3_coder \
+    --enable-auto-tool-choice
+```
+
+</CodeGroup>
+
+The model then exposes an OpenAI-compatible API on `http://localhost:8000/v1`, which integrates with popular agentic coding harnesses such as OpenCode, Pi, and OpenHands out of the box.
+
+<CodeGroup>
+
+```python Python
+from openai import OpenAI
+
+client = OpenAI(base_url="http://localhost:8000/v1", api_key="unused")
+
+response = client.chat.completions.create(
+    model="granite-4.2-30b",
+    messages=[{"role": "user", "content": "Explain the Riemann hypothesis in simple terms."}],
+    temperature=1.0,
+    top_p=0.95,
+    max_tokens=8192,
+)
+
+print(response.choices[0].message.content)
+```
+
+</CodeGroup>
