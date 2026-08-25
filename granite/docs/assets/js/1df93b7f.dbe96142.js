@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkgranite_docs=globalThis.webpackChunkgranite_docs||[]).push([[4583],{6866(a,e,r){r.r(e),r.d(e,{default:()=>i});r(6540);var s=r(6347),t=r(6025),n=r(4848);function i(){return(0,n.jsx)(s.rd,{to:(0,t.Ay)("models/granite4-2")})}}}]);
