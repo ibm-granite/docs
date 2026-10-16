@@ -8,7 +8,35 @@ Model signing is an experimental feature with ongoing development, which might i
 
 ---
 
-## Getting started
+## Granite 5.0 models and onwards
+
+_(Note: Includes [Granite Time Series PatchTST FM R2](https://huggingface.co/ibm-granite/granite-timeseries-patchtst-fm-r2) and [granitelib-core-r1.0](https://huggingface.co/ibm-granite/granitelib-core-r1.0))_
+
+Use the certificate verification method for Granite models v5.0 or later. The DigiCert root certificate must be available.
+
+```bash
+curl https://cacerts.digicert.com/DigiCertTrustedRootG4.crt.pem -o /tmp/DigiCertTrustedRootG4.crt.pem
+
+python -m model_signing verify certificate \
+    --signature model.sig \
+    --log_fingerprints \
+    --certificate_chain /tmp/DigiCertTrustedRootG4.crt.pem \
+    .
+```
+
+The following certificate fingerprints must be shown during a successful signature verification:
+
+```
+[  init  ] sha256 Fingerprint: 55:2F:7B:DC:F1:A7:AF:9E:6C:E6:72:01:7F:4F:12:AB:F7:72:40:C7:8E:76:1A:C2:03:D1:D9:D2:0A:C8:99:88
+[ verify ] sha256 Fingerprint: 46:01:1E:DE:1C:14:7E:B2:BC:73:1A:53:9B:7C:04:7B:7E:E9:3E:48:B9:D3:C3:BA:71:0C:E1:32:BB:DF:AC:6B
+[ verify ] sha256 Fingerprint: F2:9F:3F:0F:7E:95:41:60:14:69:D8:E6:44:9C:93:54:43:A0:BA:91:89:57:EE:49:CA:FC:64:AD:6E:1D:96:02
+```
+
+---
+
+## Granite 4.2 models and earlier
+
+### Getting started
 
 Before trying to verify the signature, ensure that the tensor files have been downloaded with git-lfs and that no files have been added, removed, or modified in your local git checkout:
 
@@ -26,7 +54,7 @@ pip install 'model-signing==v1.1.1'
 
 ---
 
-## Signature verification
+### Signature verification
 
 Then verify the signature with the following command ensuring that the IBM identity 'granite.preview@ibm.com' was used for signing this model:
 
